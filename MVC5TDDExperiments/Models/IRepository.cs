@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MVC5TDDExperiments.Models
 {
-    interface IRepository
+    public interface IRepository
     {
         List<Book> GetAll();
     }

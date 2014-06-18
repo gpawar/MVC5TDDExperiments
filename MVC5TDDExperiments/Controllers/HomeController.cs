@@ -46,5 +46,11 @@ namespace MVC5TDDExperiments.Controllers
             var booksByGenre = repository.GetAll().Where(b => b.Genre == genre);
             return View(booksByGenre);
         }
+
+        public ViewResult Create(Book bookToCreate)
+        {
+            var createdBook = repository.CreateBook(bookToCreate);
+            return View(createdBook);
+        }
     }
 }

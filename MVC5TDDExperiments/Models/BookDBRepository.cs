@@ -18,5 +18,10 @@ namespace MVC5TDDExperiments.Models
                 new Book() { BookId = 3, Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "Bilbo the hobbit"}
             };
         }
+
+        public Book CreateBook(Book bookToCreate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

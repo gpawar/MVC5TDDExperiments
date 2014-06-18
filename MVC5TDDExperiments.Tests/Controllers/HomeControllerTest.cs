@@ -8,12 +8,40 @@ using MVC5TDDExperiments;
 using MVC5TDDExperiments.Controllers;
 using MVC5TDDExperiments.Models;
 using Telerik.JustMock;
+using Telerik.JustMock.Helpers;
 
 namespace MVC5TDDExperiments.Tests.Controllers
 {
     [TestClass]
     public class HomeControllerTest
     {
+        [TestMethod]
+        public void CreateShowsEmptyCreationForm()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            var bookToCreate = new Book()
+            {
+                BookId = 10,
+                Title = "Bilbo the hobbit",
+                Author = "J. R. R. Tolkien",
+                Genre = "Adventure"
+            };
+            var createdBook = bookToCreate;
+            Mock.Arrange(() => repository.CreateBook(bookToCreate)).Returns(createdBook).MustBeCalled();
+
+            //Act
+            var controller = new HomeController(repository);
+            ViewResult result = controller.Create(bookToCreate);
+            var model = result.Model as Book;
+
+            //Assert
+            Assert.AreEqual(bookToCreate.Title, model.Title);
+            Assert.AreEqual(bookToCreate.BookId, model.BookId);
+            Assert.AreEqual(bookToCreate.Genre, model.Genre);
+            Assert.AreEqual(bookToCreate.Author, model.Author);
+        }
+
         [TestMethod]
         public void FindByGenreReturnsAllInGenre()
         {
@@ -28,7 +56,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Act
             var controller = new HomeController(repository);
-            ViewResult result = controller.FindByGenre("Programming"); //Error: FindByGenre method doesn't exist
+            ViewResult result = controller.FindByGenre("Programming");
             var model = result.Model as IEnumerable<Book>;
 
             //Assert

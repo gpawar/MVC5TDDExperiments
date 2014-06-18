@@ -15,6 +15,24 @@ namespace MVC5TDDExperiments.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
+        public void FindByGenreReturnsAllInGenre()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
+            {
+                new Book() {BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"},
+                new Book() {BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"},
+                new Book() {BookId = 3, Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "The Lord of the Rings"}
+            }).MustBeCalled();
+
+            //Act
+            var controller = new HomeController(repository);
+            ViewResult result = controller.FindByGenre("Programming"); //Error: FindByGenre method doesn't exist
+
+        }
+
+        [TestMethod]
         public void IndexReturnsAllBooksInDB()
         {
             //Arrange: simulate the access to the DB with a Mock

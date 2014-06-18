@@ -23,7 +23,8 @@ namespace MVC5TDDExperiments.Controllers
 
         public ViewResult Index()
         {
-            return View();
+            var books = repository.GetAll();
+            return View(books);
         }
 
         public ActionResult About()

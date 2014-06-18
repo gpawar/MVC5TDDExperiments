@@ -21,7 +21,7 @@ namespace MVC5TDDExperiments.Controllers
             this.repository = new BookDBRepository();
         }
 
-        public ActionResult Index()
+        public ViewResult Index()
         {
             return View();
         }

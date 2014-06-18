@@ -28,8 +28,12 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Act
             var controller = new HomeController(repository);
+            ViewResult result = controller.Index();
+            var model = result.Model as IEnumerable<Book>;
 
-            
+            //Assert
+            Assert.AreEqual(2, model.Count());
+
         }
 
         [TestMethod]

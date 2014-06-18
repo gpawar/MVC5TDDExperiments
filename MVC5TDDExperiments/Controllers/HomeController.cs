@@ -59,5 +59,12 @@ namespace MVC5TDDExperiments.Controllers
             ViewBag.Message = "Book created successfully";
             return View("Index", repository.GetAll());
         }
+
+        public ViewResult Delete(int id)
+        {
+            repository.Delete(id);
+            ViewBag.Message = "Book deleted successfully";
+            return View("Index", repository.GetAll());
+        }
     }
 }

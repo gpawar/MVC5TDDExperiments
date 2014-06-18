@@ -16,6 +16,33 @@ namespace MVC5TDDExperiments.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
+        public void DeleteBookReturnsToIndex()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            const int bookIdToDelete = 1;
+            Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
+            {
+                new Book() {BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"}
+            }).OccursOnce();
+            Mock.Arrange(() => repository.Delete(1)).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            ViewResult result = controller.Delete(bookIdToDelete);
+            var resultViewName = result.ViewName;
+            var model = result.Model as List<Book>;
+            var insertedBook = model.Find(b => b.BookId == bookIdToDelete);
+
+            //Assert
+            Assert.AreEqual("Index", resultViewName);
+            Assert.AreEqual(1, model.Count);
+            Assert.IsInstanceOfType(model, typeof(List<Book>));
+            Assert.IsNull(insertedBook);
+            Assert.AreEqual("Book deleted successfully", result.ViewBag.Message);
+        }
+
+        [TestMethod]
         public void CreateIndexShowsEmptyCreationForm()
         {
             //Arrange

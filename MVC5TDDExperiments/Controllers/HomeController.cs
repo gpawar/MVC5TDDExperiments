@@ -40,5 +40,10 @@ namespace MVC5TDDExperiments.Controllers
 
             return View();
         }
+
+        public ViewResult FindByGenre(string genre)
+        {
+            return View();
+        }
     }
 }

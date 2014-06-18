@@ -29,6 +29,14 @@ namespace MVC5TDDExperiments.Tests.Controllers
             //Act
             var controller = new HomeController(repository);
             ViewResult result = controller.FindByGenre("Programming"); //Error: FindByGenre method doesn't exist
+            var model = result.Model as IEnumerable<Book>;
+
+            //Assert
+            Assert.AreEqual(2, model.Count());
+            Assert.AreEqual("Roy Osherove", model.ToList()[0].Author);
+            Assert.AreEqual("Roy Osherove", model.ToList()[1].Author);
+            Assert.AreEqual("The art of Unit Testing", model.ToList()[0].Title);
+            Assert.AreEqual("Clean Code", model.ToList()[1].Title);
 
         }
 

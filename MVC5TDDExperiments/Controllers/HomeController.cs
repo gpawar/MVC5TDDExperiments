@@ -43,7 +43,8 @@ namespace MVC5TDDExperiments.Controllers
 
         public ViewResult FindByGenre(string genre)
         {
-            return View();
+            var booksByGenre = repository.GetAll().Where(b => b.Genre == genre);
+            return View(booksByGenre);
         }
     }
 }

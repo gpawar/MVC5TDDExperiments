@@ -34,7 +34,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             //Assert
             Assert.AreEqual(2, model.Count());
             Assert.AreEqual("Roy Osherove", model.ToList()[0].Author);
-            Assert.AreEqual("Roy Osherove", model.ToList()[1].Author);
+            Assert.AreEqual("Robert C. Martin", model.ToList()[1].Author);
             Assert.AreEqual("The art of Unit Testing", model.ToList()[0].Title);
             Assert.AreEqual("Clean Code", model.ToList()[1].Title);
 

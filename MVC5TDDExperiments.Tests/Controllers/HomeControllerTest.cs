@@ -16,7 +16,23 @@ namespace MVC5TDDExperiments.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
-        public void CreateShowsEmptyCreationForm()
+        public void CreateIndexShowsEmptyCreationForm()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+
+            //Act
+            var controller = new HomeController(repository);
+            ViewResult result = controller.Create();
+            var model = result.Model;
+
+            //Assert
+            Assert.IsNull(model);
+            Assert.IsNull(result.ViewBag.Message);
+        }
+
+        [TestMethod]
+        public void CreateBookReturnsCreatedBook()
         {
             //Arrange
             var repository = Mock.Create<IRepository>();

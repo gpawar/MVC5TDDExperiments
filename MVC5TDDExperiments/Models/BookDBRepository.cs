@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Owin.Security.Provider;
 
 namespace MVC5TDDExperiments.Models
 {
     class BookDBRepository : IRepository
     {
-        public List<Book> GetAll()
+        //TODO: use a real DB
+        private static List<Book> books;
+        static BookDBRepository()
         {
-            //TODO: use a real DB
-            return new List<Book>()
+            books = new List<Book>()
             {
                 new Book() { BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"},
                 new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"},
@@ -19,9 +21,15 @@ namespace MVC5TDDExperiments.Models
             };
         }
 
+        public List<Book> GetAll()
+        {
+            return books;
+        }
+
         public Book CreateBook(Book bookToCreate)
         {
-            throw new NotImplementedException();
+            books.Add(bookToCreate);
+            return books.Find(b => b.BookId == bookToCreate.BookId);
         }
     }
 }

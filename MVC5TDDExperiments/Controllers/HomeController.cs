@@ -47,6 +47,12 @@ namespace MVC5TDDExperiments.Controllers
             return View(booksByGenre);
         }
 
+        public ViewResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
         public ViewResult Create(Book bookToCreate)
         {
             var createdBook = repository.CreateBook(bookToCreate);

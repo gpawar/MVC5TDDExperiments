@@ -40,6 +40,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual(bookToCreate.BookId, model.BookId);
             Assert.AreEqual(bookToCreate.Genre, model.Genre);
             Assert.AreEqual(bookToCreate.Author, model.Author);
+            Assert.AreEqual("Book created successfully", result.ViewBag.Message);
         }
 
         [TestMethod]

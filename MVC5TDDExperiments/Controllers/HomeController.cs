@@ -50,6 +50,7 @@ namespace MVC5TDDExperiments.Controllers
         public ViewResult Create(Book bookToCreate)
         {
             var createdBook = repository.CreateBook(bookToCreate);
+            ViewBag.Message = "Book created successfully";
             return View(createdBook);
         }
     }

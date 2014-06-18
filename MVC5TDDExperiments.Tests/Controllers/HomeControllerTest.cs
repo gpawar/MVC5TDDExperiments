@@ -32,7 +32,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
         }
 
         [TestMethod]
-        public void CreateBookReturnsCreatedBook()
+        public void CreateBookReturnsToIndex()
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
@@ -43,19 +43,27 @@ namespace MVC5TDDExperiments.Tests.Controllers
                 Author = "J. R. R. Tolkien",
                 Genre = "Adventure"
             };
-            var createdBook = bookToCreate;
-            Mock.Arrange(() => repository.CreateBook(bookToCreate)).Returns(createdBook).MustBeCalled();
+            Mock.Arrange(() => repository.CreateBook(bookToCreate)).OccursOnce();
+            Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
+            {
+                bookToCreate,
+                new Book() {BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"}
+            }).OccursOnce();
 
             //Act
             var controller = new HomeController(repository);
             ViewResult result = controller.Create(bookToCreate);
-            var model = result.Model as Book;
+            var resultViewName = result.ViewName;
+            var model = result.Model as List<Book>;
+            var insertedBook = model.Find(b => b.BookId == bookToCreate.BookId);
 
             //Assert
-            Assert.AreEqual(bookToCreate.Title, model.Title);
-            Assert.AreEqual(bookToCreate.BookId, model.BookId);
-            Assert.AreEqual(bookToCreate.Genre, model.Genre);
-            Assert.AreEqual(bookToCreate.Author, model.Author);
+            Assert.AreEqual("Index", resultViewName);
+            Assert.AreEqual(2, model.Count);
+            Assert.IsInstanceOfType(model, typeof(List<Book>));
+            Assert.AreEqual(bookToCreate.Author, insertedBook.Author);
+            Assert.AreEqual(bookToCreate.Title, insertedBook.Title);
+            Assert.AreEqual(bookToCreate.Genre, insertedBook.Genre);
             Assert.AreEqual("Book created successfully", result.ViewBag.Message);
         }
 

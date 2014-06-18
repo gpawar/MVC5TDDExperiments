@@ -26,10 +26,9 @@ namespace MVC5TDDExperiments.Models
             return books;
         }
 
-        public Book CreateBook(Book bookToCreate)
+        public void CreateBook(Book bookToCreate)
         {
             books.Add(bookToCreate);
-            return books.Find(b => b.BookId == bookToCreate.BookId);
         }
     }
 }

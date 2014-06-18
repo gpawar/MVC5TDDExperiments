@@ -10,6 +10,6 @@ namespace MVC5TDDExperiments.Models
     {
         List<Book> GetAll();
 
-        Book CreateBook(Book bookToCreate);
+        void CreateBook(Book bookToCreate);
     }
 }

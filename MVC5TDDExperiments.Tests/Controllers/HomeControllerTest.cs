@@ -26,6 +26,9 @@ namespace MVC5TDDExperiments.Tests.Controllers
                 new Book() {BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"}
             }).MustBeCalled();
 
+            //Act
+            var controller = new HomeController(repository);
+
             
         }
 

@@ -20,7 +20,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
-            var bookToEdit = new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code" };
+            var bookToEdit = new Book() { BookId = 2, Author = new Author() { FirstName = "Robert C.", LastName = "Martin" }, Genre = "Programming", Title = "Clean Code" };
             Mock.Arrange(() => repository.Save(bookToEdit)).OccursOnce();
             Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>() { bookToEdit }).OccursOnce();
 
@@ -46,7 +46,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
-            var bookToEdit = new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code" };
+            var bookToEdit = new Book() { BookId = 2, Author = new Author() { FirstName = "Robert C.", LastName = "Martin" }, Genre = "Programming", Title = "Clean Code" };
             Mock.Arrange(() => repository.Get(bookToEdit.BookId)).Returns(bookToEdit).OccursOnce();
 
             //Act
@@ -72,7 +72,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             const int bookIdToDelete = 1;
             Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
             {
-                new Book() {BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"}
+                new Book() {BookId = 2, Author = new Author() { FirstName = "Robert C.", LastName = "Martin" }, Genre = "Programming", Title = "Clean Code"}
             }).OccursOnce();
             Mock.Arrange(() => repository.Delete(1)).OccursOnce();
 
@@ -118,14 +118,14 @@ namespace MVC5TDDExperiments.Tests.Controllers
             {
                 BookId = 10,
                 Title = "Bilbo the hobbit",
-                Author = "J. R. R. Tolkien",
+                Author = new Author() { FirstName = "J. R. R.", LastName = "Tolkien" },
                 Genre = "Adventure"
             };
             Mock.Arrange(() => repository.CreateBook(bookToCreate)).OccursOnce();
             Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
             {
                 bookToCreate,
-                new Book() {BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"}
+                new Book() {BookId = 1, Author = new Author(){ FirstName = "Roy", LastName = "Osherove"}, Genre = "Programming", Title = "The art of Unit Testing"}
             }).OccursOnce();
 
             //Act
@@ -153,9 +153,9 @@ namespace MVC5TDDExperiments.Tests.Controllers
             var repository = Mock.Create<IRepository>();
             Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
             {
-                new Book() {BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"},
-                new Book() {BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"},
-                new Book() {BookId = 3, Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "The Lord of the Rings"}
+                new Book() {BookId = 1, Author = new Author(){ FirstName = "Roy", LastName = "Osherove"}, Genre = "Programming", Title = "The art of Unit Testing"},
+                new Book() {BookId = 2, Author = new Author() { FirstName = "Robert C.", LastName = "Martin" }, Genre = "Programming", Title = "Clean Code"},
+                new Book() {BookId = 3, Author = new Author(){ FirstName = "J. R. R.", LastName = "Tolkien"}, Genre = "Adventure", Title = "The Lord of the Rings"}
             }).MustBeCalled();
 
             //Act
@@ -165,8 +165,8 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Assert
             Assert.AreEqual(2, model.Count());
-            Assert.AreEqual("Roy Osherove", model.ToList()[0].Author);
-            Assert.AreEqual("Robert C. Martin", model.ToList()[1].Author);
+            Assert.AreEqual("Roy Osherove", model.ToList()[0].Author.FullName);
+            Assert.AreEqual("Robert C. Martin", model.ToList()[1].Author.FullName);
             Assert.AreEqual("The art of Unit Testing", model.ToList()[0].Title);
             Assert.AreEqual("Clean Code", model.ToList()[1].Title);
             Mock.Assert(repository);
@@ -180,8 +180,8 @@ namespace MVC5TDDExperiments.Tests.Controllers
             var repository = Mock.Create<IRepository>();
             Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>()
             {
-                new Book() {BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"},
-                new Book() {BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"}
+                new Book() {BookId = 1, Author = new Author(){ FirstName = "Roy", LastName = "Osherove"}, Genre = "Programming", Title = "The art of Unit Testing"},
+                new Book() {BookId = 2, Author = new Author() { FirstName = "Robert C.", LastName = "Martin" }, Genre = "Programming", Title = "Clean Code"}
             }).MustBeCalled();
 
             //Act
@@ -193,19 +193,6 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual(2, model.Count());
             Mock.Assert(repository);
 
-        }
-
-        [TestMethod]
-        public void Index()
-        {
-            // Arrange
-            HomeController controller = new HomeController();
-
-            // Act
-            ViewResult result = controller.Index() as ViewResult;
-
-            // Assert
-            Assert.IsNotNull(result);
         }
 
         [TestMethod]

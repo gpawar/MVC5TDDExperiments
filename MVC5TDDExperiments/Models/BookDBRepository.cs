@@ -19,7 +19,7 @@ namespace MVC5TDDExperiments.Models
 
         public List<Book> GetAll()
         {
-            return db.Books.ToList();
+            return db.Books.Include(b => b.Author).ToList();
         }
 
         public void CreateBook(Book bookToCreate)

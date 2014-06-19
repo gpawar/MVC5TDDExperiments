@@ -18,11 +18,18 @@ namespace MVC5TDDExperiments.Migrations
 
         protected override void Seed(MVC5TDDExperiments.Models.BookStoreDb context)
         {
+            var roy = new Author() {FirstName = "Roy", LastName = "Osherove"};
+            var robert = new Author() {FirstName = "Robert C.", LastName = "Martin"};
+            var jrr = new Author() {FirstName = "J. R. R.", LastName = "Tolkien"};
+            context.Authors.AddOrUpdate(a => a.FirstName, roy, robert, jrr);
+
             context.Books.AddOrUpdate(b => b.Title, 
-                new Book() { Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing" },
-                new Book() { Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code" },
-                new Book() { Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "The Lord of the Rings" },
-                new Book() { Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "Bilbo the hobbit" });
+                new Book() { Author = roy, Genre = "Programming", Title = "The art of Unit Testing" },
+                new Book() { Author = robert, Genre = "Programming", Title = "Clean Code" },
+                new Book() { Author = jrr, Genre = "Adventure", Title = "The Lord of the Rings" },
+                new Book() { Author = jrr, Genre = "Adventure", Title = "Bilbo the hobbit" });
+
+            context.SaveChanges();
         }
     }
 }

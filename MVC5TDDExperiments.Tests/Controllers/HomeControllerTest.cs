@@ -23,7 +23,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             var bookToEdit = new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code" };
             Mock.Arrange(() => repository.Save(bookToEdit)).OccursOnce();
             Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>() { bookToEdit }).OccursOnce();
-            
+
             //Act
             var controller = new HomeController(repository);
             ViewResult result = controller.Edit(bookToEdit);
@@ -38,6 +38,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual(insertedBook.Genre, bookToEdit.Genre);
             Assert.AreEqual(insertedBook.Title, bookToEdit.Title);
             Assert.AreEqual("Book edited successfully", result.ViewBag.Message);
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -60,6 +61,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual(model.Genre, bookToEdit.Genre);
             Assert.AreEqual(model.Title, bookToEdit.Title);
             Assert.IsNull(result.ViewBag.Message);
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -87,6 +89,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.IsInstanceOfType(model, typeof(List<Book>));
             Assert.IsNull(insertedBook);
             Assert.AreEqual("Book deleted successfully", result.ViewBag.Message);
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -103,6 +106,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             //Assert
             Assert.IsNull(model);
             Assert.IsNull(result.ViewBag.Message);
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -139,6 +143,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual(bookToCreate.Title, insertedBook.Title);
             Assert.AreEqual(bookToCreate.Genre, insertedBook.Genre);
             Assert.AreEqual("Book created successfully", result.ViewBag.Message);
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -164,7 +169,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual("Robert C. Martin", model.ToList()[1].Author);
             Assert.AreEqual("The art of Unit Testing", model.ToList()[0].Title);
             Assert.AreEqual("Clean Code", model.ToList()[1].Title);
-
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -186,6 +191,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Assert
             Assert.AreEqual(2, model.Count());
+            Mock.Assert(repository);
 
         }
 

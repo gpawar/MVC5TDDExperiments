@@ -16,6 +16,53 @@ namespace MVC5TDDExperiments.Tests.Controllers
     public class HomeControllerTest
     {
         [TestMethod]
+        public void EditFormSubmitReturnsToIndex()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            var bookToEdit = new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code" };
+            Mock.Arrange(() => repository.Save(bookToEdit)).OccursOnce();
+            Mock.Arrange(() => repository.GetAll()).Returns(new List<Book>() { bookToEdit }).OccursOnce();
+            
+            //Act
+            var controller = new HomeController(repository);
+            ViewResult result = controller.Edit(bookToEdit);
+            var model = result.Model as List<Book>;
+            var insertedBook = model.Find(b => b.BookId == bookToEdit.BookId);
+
+            //Assert
+            Assert.AreEqual("Index", result.ViewName);
+            Assert.AreEqual(1, model.Count);
+            Assert.AreEqual(insertedBook.BookId, bookToEdit.BookId);
+            Assert.AreEqual(insertedBook.Author, bookToEdit.Author);
+            Assert.AreEqual(insertedBook.Genre, bookToEdit.Genre);
+            Assert.AreEqual(insertedBook.Title, bookToEdit.Title);
+            Assert.AreEqual("Book edited successfully", result.ViewBag.Message);
+        }
+
+        [TestMethod]
+        public void EditIndexShowsBookEditFormWithBookContent()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            var bookToEdit = new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code" };
+            Mock.Arrange(() => repository.Get(bookToEdit.BookId)).Returns(bookToEdit).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            ViewResult result = controller.Edit(bookToEdit.BookId);
+            var model = result.Model as Book;
+
+            //Assert
+            Assert.IsNotNull(model);
+            Assert.AreEqual(model.BookId, bookToEdit.BookId);
+            Assert.AreEqual(model.Author, bookToEdit.Author);
+            Assert.AreEqual(model.Genre, bookToEdit.Genre);
+            Assert.AreEqual(model.Title, bookToEdit.Title);
+            Assert.IsNull(result.ViewBag.Message);
+        }
+
+        [TestMethod]
         public void DeleteBookReturnsToIndex()
         {
             //Arrange

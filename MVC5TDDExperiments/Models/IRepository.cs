@@ -13,5 +13,9 @@ namespace MVC5TDDExperiments.Models
         void CreateBook(Book bookToCreate);
 
         void Delete(int idToDelete);
+
+        Book Get(int bookId);
+
+        void Save(Book bookToEdit);
     }
 }

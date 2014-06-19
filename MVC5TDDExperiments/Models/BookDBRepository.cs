@@ -39,5 +39,21 @@ namespace MVC5TDDExperiments.Models
             var bookToDelete = books.Find(b => b.BookId == idToDelete);
             books.Remove(bookToDelete);
         }
+
+
+        public Book Get(int bookId)
+        {
+            var book = books.Find(b => b.BookId == bookId);
+            return book;
+        }
+
+
+        public void Save(Book bookToEdit)
+        {
+            var originalBook = books.Find(b => b.BookId == bookToEdit.BookId);
+            originalBook.Author = bookToEdit.Author;
+            originalBook.Title = bookToEdit.Title;
+            originalBook.Genre = bookToEdit.Genre;
+        }
     }
 }

@@ -77,9 +77,23 @@ namespace MVC5TDDExperiments.Controllers
         [HttpPost]
         public ViewResult Edit(Book bookToEdit)
         {
-            repository.Save(bookToEdit);
-            ViewBag.Message = "Book edited successfully";
-            return View("Index", repository.GetAll());
+            if (ModelState.IsValid)
+            {
+                repository.Save(bookToEdit);
+                ViewBag.Message = "Book edited successfully";
+                return View("Index", repository.GetAll());
+            }
+            return View(bookToEdit);
+
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                repository.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

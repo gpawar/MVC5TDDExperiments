@@ -1,59 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
+using System.Web.ModelBinding;
 using Microsoft.Owin.Security.Provider;
 
 namespace MVC5TDDExperiments.Models
 {
     class BookDBRepository : IRepository
     {
-        //TODO: use a real DB
-        private static List<Book> books;
-        static BookDBRepository()
+        private BookStoreDb db = new BookStoreDb();
+        public BookStoreDb BookStoreDb
         {
-            books = new List<Book>()
-            {
-                new Book() { BookId = 1, Author = "Roy Osherove", Genre = "Programming", Title = "The art of Unit Testing"},
-                new Book() { BookId = 2, Author = "Robert C. Martin", Genre = "Programming", Title = "Clean Code"},
-                new Book() { BookId = 3, Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "The Lord of the Rings"},
-                new Book() { BookId = 4, Author = "J. R. R. Tolkien", Genre = "Adventure", Title = "Bilbo the hobbit"}
-            };
+            get { return db; }
         }
+
 
         public List<Book> GetAll()
         {
-            return books;
+            return db.Books.ToList();
         }
 
         public void CreateBook(Book bookToCreate)
         {
-            int id = books.Max(b => b.BookId) + 1;
-            bookToCreate.BookId = id;
-            books.Add(bookToCreate);
+            db.Books.Add(bookToCreate);
+            db.SaveChanges();
         }
 
 
         public void Delete(int idToDelete)
         {
-            var bookToDelete = books.Find(b => b.BookId == idToDelete);
-            books.Remove(bookToDelete);
+            var book = db.Books.Find(idToDelete);
+            db.Books.Remove(book);
+            db.SaveChanges();
         }
 
 
         public Book Get(int bookId)
         {
-            var book = books.Find(b => b.BookId == bookId);
-            return book;
+            return db.Books.Find(bookId);
         }
 
 
         public void Save(Book bookToEdit)
         {
-            var originalBook = books.Find(b => b.BookId == bookToEdit.BookId);
-            originalBook.Author = bookToEdit.Author;
-            originalBook.Title = bookToEdit.Title;
-            originalBook.Genre = bookToEdit.Genre;
+            db.Entry(bookToEdit).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
+
+        public void Dispose()
+        {
+            db.Dispose();
         }
     }
 }

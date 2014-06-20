@@ -119,7 +119,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Assert
             Assert.AreEqual("Index", result.RouteValues["action"]);
-            Assert.AreEqual("Book edited successfully", controller.ViewBag.Message);
+            Assert.AreEqual("Book edited successfully", controller.TempData["Message"]);
             Mock.Assert(repository);
         }
 
@@ -224,7 +224,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Assert
             Assert.AreEqual("Index", result.RouteValues["action"]);
-            Assert.AreEqual("Book created successfully", controller.ViewBag.Message);
+            Assert.AreEqual("Book created successfully", controller.TempData["Message"]);
             Mock.Assert(repository);
         }
 

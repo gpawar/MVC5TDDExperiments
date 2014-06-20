@@ -58,22 +58,17 @@ namespace MVC5TDDExperiments.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(BookEditViewModel bookToCreate)
+        public ActionResult Create(BookEditViewModel bookViewModel)
         {
             if (ModelState.IsValid)
             {
-                var book = new Book()
-                {
-                    AuthorId = bookToCreate.AuthorId,
-                    Genre = bookToCreate.Genre,
-                    Title = bookToCreate.Title,
-                };
+                var book = new Book(bookViewModel);
                 repository.CreateBook(book);
-                ViewBag.Message = "Book created successfully";
+                TempData["Message"] = "Book created successfully";
                 return RedirectToAction("Index");
             }
-            bookToCreate.Authors = PopulateAuthorsDropdown();
-            return View(bookToCreate);
+            bookViewModel.Authors = PopulateAuthorsDropdown();
+            return View(bookViewModel);
         }
 
         public ViewResult Delete(int id)
@@ -93,12 +88,8 @@ namespace MVC5TDDExperiments.Controllers
                 return HttpNotFound("No book found for id " + id);
             }
 
-            var bookViewModel = new BookEditViewModel()
+            var bookViewModel = new BookEditViewModel(dbBook)
             {
-                BookId = dbBook.BookId,
-                AuthorId = dbBook.AuthorId,
-                Genre = dbBook.Genre,
-                Title = dbBook.Title,
                 Authors = PopulateAuthorsDropdown(dbBook.AuthorId),
             };
 
@@ -106,23 +97,17 @@ namespace MVC5TDDExperiments.Controllers
         }
         
         [HttpPost]
-        public ActionResult Edit(BookEditViewModel book)
+        public ActionResult Edit(BookEditViewModel bookViewModel)
         {
             if (ModelState.IsValid)
             {
-                var bookEntity = new Book()
-                {
-                    BookId = book.BookId,
-                    Genre = book.Genre,
-                    Title = book.Title,
-                    AuthorId = book.AuthorId
-                };
+                var bookEntity = new Book(bookViewModel);
                 repository.Save(bookEntity);
-                ViewBag.Message = "Book edited successfully";
+                TempData["Message"] = "Book edited successfully";
                 return RedirectToAction("Index");
             }
-            book.Authors = PopulateAuthorsDropdown(book.AuthorId);
-            return View(book);
+            bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
+            return View(bookViewModel);
         }
 
 

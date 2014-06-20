@@ -130,5 +130,11 @@ namespace MVC5TDDExperiments.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ViewResult Details(int id)
+        {
+            var book = repository.GetBook(id);
+            return View(book);
+        }
     }
 }

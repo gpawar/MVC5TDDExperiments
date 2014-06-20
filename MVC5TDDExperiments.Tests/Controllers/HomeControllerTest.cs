@@ -25,6 +25,30 @@ namespace MVC5TDDExperiments.Tests.Controllers
          */
 
         [TestMethod]
+        public void DetailsShowsCompleteBookData()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            var cleanCode = BookHelper.CleanCode(1);
+            Mock.Arrange(() => repository.GetBook(cleanCode.BookId)).Returns(cleanCode).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            var result = controller.Details(cleanCode.BookId) as ViewResult;
+            var model = result.Model as Book;
+
+            //Assert
+            Assert.IsInstanceOfType(model, typeof(Book));
+            Assert.AreEqual(model.BookId, cleanCode.BookId);
+            Assert.AreEqual(model.AuthorId, cleanCode.AuthorId);
+            Assert.AreEqual(model.Genre, cleanCode.Genre);
+            Assert.AreEqual(model.Title, cleanCode.Title);
+            Assert.AreEqual("", result.ViewName);
+            Assert.IsNull(result.ViewBag.Message);
+            Mock.Assert(repository);
+        }
+
+        [TestMethod]
         public void EditFormSubmitReturnsToIndex()
         {
             //Arrange

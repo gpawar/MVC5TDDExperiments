@@ -18,7 +18,7 @@ namespace MVC5TDDExperiments.Models
 
         public List<Book> GetAllBooks()
         {
-            return db.Books.Include(b => b.Author).ToList();
+            return db.Books.ToList();
         }
 
         public List<Author> GetAllAuthors()
@@ -58,6 +58,12 @@ namespace MVC5TDDExperiments.Models
         public void Dispose()
         {
             db.Dispose();
+        }
+
+
+        public List<Book> GetBooksByGenre(string genre)
+        {
+            return db.Books.Where(b => b.Genre == genre).ToList();
         }
     }
 }

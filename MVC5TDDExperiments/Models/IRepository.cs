@@ -21,6 +21,8 @@ namespace MVC5TDDExperiments.Models
 
         void Save(Book bookToEdit);
 
+        List<Book> GetBooksByGenre(string genre);
+
         void Dispose();
     }
 }

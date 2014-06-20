@@ -160,11 +160,10 @@ namespace MVC5TDDExperiments.Tests.Controllers
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
-            Mock.Arrange(() => repository.GetAllBooks()).Returns(new List<Book>()
+            Mock.Arrange(() => repository.GetBooksByGenre(BookHelper.ArtOfUnitTesting(1).Genre)).Returns(new List<Book>()
             {
                 BookHelper.ArtOfUnitTesting(1),
-                BookHelper.CleanCode(2),
-                BookHelper.LordOfTheRings(3)
+                BookHelper.CleanCode(2)
             }).MustBeCalled();
 
             //Act

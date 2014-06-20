@@ -44,7 +44,7 @@ namespace MVC5TDDExperiments.Controllers
 
         public ViewResult FindByGenre(string genre)
         {
-            var booksByGenre = repository.GetAllBooks().Where(b => b.Genre == genre);
+            var booksByGenre = repository.GetBooksByGenre(genre);
             return View(booksByGenre);
         }
 

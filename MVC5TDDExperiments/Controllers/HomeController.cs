@@ -50,15 +50,30 @@ namespace MVC5TDDExperiments.Controllers
 
         public ViewResult Create()
         {
-            return View();
+            var bookEditViewModel = new BookEditViewModel()
+            {
+                Authors = PopulateAuthorsDropdown()
+            };
+            return View(bookEditViewModel);
         }
 
         [HttpPost]
-        public ViewResult Create(Book bookToCreate)
+        public ActionResult Create(BookEditViewModel bookToCreate)
         {
-            repository.CreateBook(bookToCreate);
-            ViewBag.Message = "Book created successfully";
-            return View("Index", repository.GetAllBooks());
+            if (ModelState.IsValid)
+            {
+                var book = new Book()
+                {
+                    AuthorId = bookToCreate.AuthorId,
+                    Genre = bookToCreate.Genre,
+                    Title = bookToCreate.Title,
+                };
+                repository.CreateBook(book);
+                ViewBag.Message = "Book created successfully";
+                return RedirectToAction("Index");
+            }
+            bookToCreate.Authors = PopulateAuthorsDropdown();
+            return View(bookToCreate);
         }
 
         public ViewResult Delete(int id)
@@ -110,7 +125,7 @@ namespace MVC5TDDExperiments.Controllers
         }
 
 
-        private List<SelectListItem> PopulateAuthorsDropdown(int selectedAuthorId)
+        private List<SelectListItem> PopulateAuthorsDropdown(int selectedAuthorId = -1)
         {
             var authors = repository.GetAllAuthors();
 

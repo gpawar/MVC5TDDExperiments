@@ -95,7 +95,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
         }
 
         [TestMethod]
-        public void EditIndexShowsBookEditFormWithBookContent()
+        public void EditIndexShowsBookEditFormWithBookContentWithPopulatedDropDownList()
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
@@ -113,6 +113,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             var controller = new HomeController(repository);
             var result = controller.Edit(bookToEdit.BookId) as ViewResult;
             var model = result.Model as BookEditViewModel;
+            var selectedItem = model.Authors.Find(b => Int32.Parse(b.Value) == bookToEdit.AuthorId);
 
             //Assert
             Assert.IsNotNull(model);
@@ -120,6 +121,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual(model.AuthorId, bookToEdit.AuthorId);
             Assert.AreEqual(model.Genre, bookToEdit.Genre);
             Assert.AreEqual(model.Title, bookToEdit.Title);
+            Assert.IsTrue(selectedItem.Selected);
             Assert.IsNull(result.ViewBag.Message);
             Mock.Assert(repository);
         }
@@ -153,50 +155,47 @@ namespace MVC5TDDExperiments.Tests.Controllers
         }
 
         [TestMethod]
-        public void CreateIndexShowsEmptyCreationForm()
+        public void CreateIndexShowsEmptyCreationFormWithPopulatedDropDownList()
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
+            var authorsList = new List<Author>(){ AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(2) };
+            Mock.Arrange(() => repository.GetAllAuthors()).Returns(authorsList).OccursOnce();
 
             //Act
             var controller = new HomeController(repository);
             ViewResult result = controller.Create();
-            var model = result.Model;
+            var model = result.Model as BookEditViewModel;
 
             //Assert
-            Assert.IsNull(model);
+            Assert.IsInstanceOfType(model, typeof(BookEditViewModel));
+            Assert.AreEqual(2, model.Authors.Count);
+            Assert.IsFalse(model.Authors.Exists(a => a.Selected));
             Assert.IsNull(result.ViewBag.Message);
             Mock.Assert(repository);
         }
 
         [TestMethod]
-        public void CreateBookReturnsToIndex()
+        public void CreateBookReturnsToIndexWithMessage()
         {
             //Arrange
             var repository = Mock.Create<IRepository>();
-            var bookToCreate = BookHelper.BilboTheHobbit(10);
-            Mock.Arrange(() => repository.CreateBook(bookToCreate)).OccursOnce();
-            Mock.Arrange(() => repository.GetAllBooks()).Returns(new List<Book>()
+            var submittedBookViewModel = new BookEditViewModel()
             {
-                bookToCreate,
-                BookHelper.ArtOfUnitTesting(1)
-            }).OccursOnce();
+                Genre = BookHelper.BilboTheHobbit().Genre,
+                Title = BookHelper.BilboTheHobbit().Title,
+                AuthorId = 1,
+                Authors = null //after post submit this value is null
+            };
+            Mock.Arrange(() => repository.CreateBook((Book) Arg.AnyObject)).OccursOnce();
 
             //Act
             var controller = new HomeController(repository);
-            ViewResult result = controller.Create(bookToCreate);
-            var resultViewName = result.ViewName;
-            var model = result.Model as List<Book>;
-            var insertedBook = model.Find(b => b.BookId == bookToCreate.BookId);
+            var result = controller.Create(submittedBookViewModel) as RedirectToRouteResult;
 
             //Assert
-            Assert.AreEqual("Index", resultViewName);
-            Assert.AreEqual(2, model.Count);
-            Assert.IsInstanceOfType(model, typeof(List<Book>));
-            Assert.AreEqual(bookToCreate.Author, insertedBook.Author);
-            Assert.AreEqual(bookToCreate.Title, insertedBook.Title);
-            Assert.AreEqual(bookToCreate.Genre, insertedBook.Genre);
-            Assert.AreEqual("Book created successfully", result.ViewBag.Message);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
+            Assert.AreEqual("Book created successfully", controller.ViewBag.Message);
             Mock.Assert(repository);
         }
 

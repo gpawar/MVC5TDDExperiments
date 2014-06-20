@@ -8,7 +8,7 @@ using Microsoft.Owin.Security.Provider;
 
 namespace MVC5TDDExperiments.Models
 {
-    class BookDBRepository : IRepository
+    class BookStoreRepository : IRepository
     {
         private BookStoreDb db = new BookStoreDb();
         public BookStoreDb BookStoreDb

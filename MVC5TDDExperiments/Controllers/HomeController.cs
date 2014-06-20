@@ -19,7 +19,7 @@ namespace MVC5TDDExperiments.Controllers
 
         public HomeController()
         {
-            this.repository = new BookDBRepository();
+            this.repository = new BookStoreRepository();
         }
 
         public ViewResult Index()

@@ -99,15 +99,31 @@ namespace MVC5TDDExperiments.Controllers
         [HttpPost]
         public ActionResult Edit(BookEditViewModel bookViewModel)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var bookEntity = new Book(bookViewModel);
+                bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
+                return View(bookViewModel);
+            }
+
+            var bookEntity = new Book(bookViewModel);
+            if (!TryValidateModel(bookEntity))
+            {
+                bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
+                return View(bookViewModel);
+            }
+
+            try
+            {
                 repository.Save(bookEntity);
                 TempData["Message"] = "Book edited successfully";
                 return RedirectToAction("Index");
             }
-            bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
-            return View(bookViewModel);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
+                return View(bookViewModel);
+            } 
         }
 
 

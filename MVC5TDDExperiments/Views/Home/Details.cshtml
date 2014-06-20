@@ -26,14 +26,7 @@
         <dd>
             @Html.DisplayFor(model => model.Genre)
         </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Author.FullName)
-        </dd>
+        @Html.Partial("_Authors", @Model.Author)
     </dl>
 </div>
 <p>

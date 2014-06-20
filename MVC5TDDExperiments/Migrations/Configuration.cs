@@ -18,16 +18,16 @@ namespace MVC5TDDExperiments.Migrations
 
         protected override void Seed(MVC5TDDExperiments.Models.BookStoreDb context)
         {
-            var roy = new Author() {FirstName = "Roy", LastName = "Osherove"};
-            var robert = new Author() {FirstName = "Robert C.", LastName = "Martin"};
-            var jrr = new Author() {FirstName = "J. R. R.", LastName = "Tolkien"};
-            context.Authors.AddOrUpdate(a => a.FirstName, roy, robert, jrr);
+            var roy = new Author() {AuthorId = 1, FirstName = "Roy", LastName = "Osherove"};
+            var robert = new Author() { AuthorId = 2, FirstName = "Robert C.", LastName = "Martin" };
+            var jrr = new Author() { AuthorId = 3, FirstName = "J. R. R.", LastName = "Tolkien" };
+            context.Authors.AddOrUpdate(a => a.AuthorId, roy, robert, jrr);
 
-            context.Books.AddOrUpdate(b => b.Title, 
-                new Book() { Author = roy, Genre = "Programming", Title = "The art of Unit Testing" },
-                new Book() { Author = robert, Genre = "Programming", Title = "Clean Code" },
-                new Book() { Author = jrr, Genre = "Adventure", Title = "The Lord of the Rings" },
-                new Book() { Author = jrr, Genre = "Adventure", Title = "Bilbo the hobbit" });
+            context.Books.AddOrUpdate(b => b.BookId, 
+                new Book() { BookId = 1, AuthorId = roy.AuthorId, Genre = "Programming", Title = "The art of Unit Testing" },
+                new Book() { BookId = 2, AuthorId = robert.AuthorId, Genre = "Programming", Title = "Clean Code" },
+                new Book() { BookId = 3, AuthorId = jrr.AuthorId, Genre = "Adventure", Title = "The Lord of the Rings" },
+                new Book() { BookId = 4, AuthorId = jrr.AuthorId, Genre = "Adventure", Title = "Bilbo the hobbit" });
 
             context.SaveChanges();
         }

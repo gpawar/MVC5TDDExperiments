@@ -8,13 +8,16 @@ namespace MVC5TDDExperiments.Models
 {
     public interface IRepository
     {
-        List<Book> GetAll();
+        List<Book> GetAllBooks();
+        List<Author> GetAllAuthors();
 
         void CreateBook(Book bookToCreate);
 
         void Delete(int idToDelete);
 
-        Book Get(int bookId);
+        Book GetBook(int bookId);
+
+        Author GetAuthor(int authorId);
 
         void Save(Book bookToEdit);
 

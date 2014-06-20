@@ -16,10 +16,14 @@ namespace MVC5TDDExperiments.Models
             get { return db; }
         }
 
-
-        public List<Book> GetAll()
+        public List<Book> GetAllBooks()
         {
             return db.Books.Include(b => b.Author).ToList();
+        }
+
+        public List<Author> GetAllAuthors()
+        {
+            return db.Authors.ToList();
         }
 
         public void CreateBook(Book bookToCreate)
@@ -28,7 +32,6 @@ namespace MVC5TDDExperiments.Models
             db.SaveChanges();
         }
 
-
         public void Delete(int idToDelete)
         {
             var book = db.Books.Find(idToDelete);
@@ -36,19 +39,21 @@ namespace MVC5TDDExperiments.Models
             db.SaveChanges();
         }
 
-
-        public Book Get(int bookId)
+        public Book GetBook(int bookId)
         {
             return db.Books.Find(bookId);
         }
 
+        public Author GetAuthor(int authorId)
+        {
+            return db.Authors.Find(authorId);
+        }
 
         public void Save(Book bookToEdit)
         {
             db.Entry(bookToEdit).State = EntityState.Modified;
             db.SaveChanges();
         }
-
 
         public void Dispose()
         {

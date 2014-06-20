@@ -15,6 +15,6 @@ namespace MVC5TDDExperiments.Models
             get { return FirstName + " " + LastName; }
         }
 
-        public ICollection<Book> Books  { get; set; }
+        public virtual ICollection<Book> Books { get; set; }
     }
 }

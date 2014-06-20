@@ -26,9 +26,9 @@ namespace MVC5TDDExperiments.Tests.Helpers
             return CreateAuthor(id, "J. R. R.", "Tolkien");
         }
 
-        private static Author CreateAuthor(int id, string firstName, string lastName)
+        public static Author CreateAuthor(int id, string firstName, string lastName)
         {
-            if (id == -1)
+            if (id == NO_ID)
             {
                 return new Author() { FirstName = firstName, LastName = lastName };
             }

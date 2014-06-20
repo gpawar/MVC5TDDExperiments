@@ -20,9 +20,38 @@ namespace MVC5TDDExperiments.Tests.Controllers
         /**
          * Tests todo:
          *  - error on model state in edit
-         *  - populate authors in view model also on error
-         *  - test for HomeController.PopulateAuthorsDropdown
          */
+
+        [TestMethod]
+        public void EditFormSubmitWithInvalidModelStateRepopulateDropDownList()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            int bookId = 1;
+            int authorId = 1;
+            var book = new BookEditViewModel()
+            {
+                AuthorId = AuthorHelper.RobertMartin(authorId).AuthorId,
+                BookId = BookHelper.CleanCode(bookId, authorId).BookId,
+                Title = BookHelper.CleanCode(bookId, authorId).Title,
+                Genre = BookHelper.CleanCode(bookId, authorId).Genre,
+            };
+            Mock.Arrange(() => repository.Save((Book) Arg.AnyObject)).OccursNever();
+            var authorsList = new List<Author>() { AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(2) };
+            Mock.Arrange(() => repository.GetAllAuthors()).Returns(authorsList).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            controller.ModelState.AddModelError("test", new Exception("Empty exception to make the ModelState.IsValid pass to false"));
+            var result = controller.Edit(book) as ViewResult;
+            var model = result.Model as BookEditViewModel;
+
+            //Assert
+            Assert.AreEqual("", result.ViewName);
+            Assert.IsTrue(model.Authors.Exists(a => a.Selected));
+            Assert.IsNull(controller.ViewBag.Message);
+            Mock.Assert(repository);
+        }
 
         [TestMethod]
         public void EditIndexInvalidIdReturnsHttpNotFound()

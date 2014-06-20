@@ -121,6 +121,7 @@ namespace MVC5TDDExperiments.Controllers
                 ViewBag.Message = "Book edited successfully";
                 return RedirectToAction("Index");
             }
+            book.Authors = PopulateAuthorsDropdown(book.AuthorId);
             return View(book);
         }
 

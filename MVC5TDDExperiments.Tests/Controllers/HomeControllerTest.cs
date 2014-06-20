@@ -25,6 +25,27 @@ namespace MVC5TDDExperiments.Tests.Controllers
          */
 
         [TestMethod]
+        public void EditIndexInvalidIdReturnsHttpNotFound()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            int unexistingBookId = 999;
+            Book nullBook = null;
+            Mock.Arrange(() => repository.GetBook(Arg.AnyInt)).Returns(nullBook).OccursOnce();
+            Mock.Arrange(() => repository.GetAllAuthors()).OccursNever();
+
+            //Act
+            var controller = new HomeController(repository);
+            var result = controller.Edit(unexistingBookId) as HttpNotFoundResult;
+
+            //Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual("No book found for id " + unexistingBookId, result.StatusDescription);
+            Assert.AreEqual("404", result.StatusCode.ToString());
+            Mock.Assert(repository);
+        }
+
+        [TestMethod]
         public void DetailsShowsCompleteBookData()
         {
             //Arrange
@@ -90,7 +111,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Act
             var controller = new HomeController(repository);
-            ViewResult result = controller.Edit(bookToEdit.BookId);
+            var result = controller.Edit(bookToEdit.BookId) as ViewResult;
             var model = result.Model as BookEditViewModel;
 
             //Assert

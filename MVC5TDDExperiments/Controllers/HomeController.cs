@@ -69,9 +69,15 @@ namespace MVC5TDDExperiments.Controllers
         }
 
 
-        public ViewResult Edit(int id)
+        public ActionResult Edit(int id)
         {
             var dbBook = repository.GetBook(id);
+
+            if (dbBook == null)
+            {
+                return HttpNotFound("No book found for id " + id);
+            }
+
             var bookViewModel = new BookEditViewModel()
             {
                 BookId = dbBook.BookId,

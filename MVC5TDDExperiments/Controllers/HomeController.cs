@@ -62,6 +62,7 @@ namespace MVC5TDDExperiments.Controllers
 
         [HttpPost]
         [Authorize(Roles = "administrator")]
+        [ValidateAntiForgeryToken]
         public ActionResult Create(BookEditViewModel bookViewModel)
         {
             try

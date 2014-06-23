@@ -30,6 +30,14 @@ namespace MVC5TDDExperiments.Migrations
                 new Book() { BookId = 4, AuthorId = jrr.AuthorId, Genre = "Adventure", Title = "Bilbo the hobbit" });
 
             context.SaveChanges();
+
+            SeedUserRoles(context);
+        }
+
+        private void SeedUserRoles(MVC5TDDExperiments.Models.BookStoreDb context)
+        {
+            //TODO: create default user
+            
         }
     }
 }

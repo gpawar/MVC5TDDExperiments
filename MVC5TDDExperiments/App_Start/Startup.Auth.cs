@@ -17,7 +17,7 @@ namespace MVC5TDDExperiments
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context and user manager to use a single instance per request
-            app.CreatePerOwinContext(ApplicationDbContext.Create);
+            app.CreatePerOwinContext(BookStoreDb.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
 
             // Enable the application to use a cookie to store information for the signed in user
@@ -36,7 +36,7 @@ namespace MVC5TDDExperiments
             });
             
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
-
+            
             // Uncomment the following lines to enable logging in with third party login providers
             //app.UseMicrosoftAccountAuthentication(
             //    clientId: "",

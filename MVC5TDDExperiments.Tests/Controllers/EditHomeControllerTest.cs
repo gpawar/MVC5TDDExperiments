@@ -22,7 +22,39 @@ namespace MVC5TDDExperiments.Tests.Controllers
         [TestMethod]
         public void EditViewModelValidationErrorRepopulatesAuthorsDropdown()
         {
-            throw new NotImplementedException("todo: view model error");
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            int bookId = 1;
+            int authorId = 3;
+            string validationError = "The minimal length for the title is 3";
+            var book = new BookEditViewModel()
+            {
+                AuthorId = AuthorHelper.RobertMartin(authorId).AuthorId,
+                BookId = BookHelper.CleanCode(bookId, authorId).BookId,
+                Title = "12", //Too short, min is 3 (defined in the view model)
+                Genre = BookHelper.CleanCode(bookId, authorId).Genre,
+            };
+            Mock.Arrange(() => repository.Save((Book)Arg.AnyObject)).OccursNever();
+            var authorsList = new List<Author>() { AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(authorId) };
+            Mock.Arrange(() => repository.GetAllAuthors()).Returns(authorsList).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            controller.ModelState.AddModelError("Title", validationError); //add the view model validation error
+            controller.ControllerContext = Mock.Create<ControllerContext>(); //needed by TryValidateModel(entity)
+
+            var result = controller.Edit(book) as ViewResult;
+            var model = result.Model as BookEditViewModel;
+            var errorStates = from m in controller.ModelState.Values select m.Errors;
+            var selectedAuthor = model.Authors.Find(a => a.Selected);
+
+            //Assert
+            Assert.AreEqual("", result.ViewName);
+            Assert.AreEqual(validationError, errorStates.First().First().ErrorMessage);
+            Assert.AreEqual(book.AuthorId.ToString(), selectedAuthor.Value);
+            Assert.IsNull(controller.ViewBag.Message);
+            Assert.IsNull(controller.TempData["Message"]);
+            Mock.Assert(repository);
         }
 
         [TestMethod]
@@ -93,6 +125,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
             Assert.AreEqual("The minimal length for the title is 4 - From Entity", errorStates.First().First().ErrorMessage);
             Assert.AreEqual(book.AuthorId.ToString(), selectedAuthor.Value);
             Assert.IsNull(controller.ViewBag.Message);
+            Assert.IsNull(controller.TempData["Message"]);
             Mock.Assert(repository);
         }
 

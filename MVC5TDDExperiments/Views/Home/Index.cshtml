@@ -8,7 +8,10 @@
 <p style="color:red;">@ViewBag.Message</p>
 <p style="color:red;">@TempData["Message"]</p>
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @if (User.IsInRole("administrator"))
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
 </p>
 <table class="table">
     <tr>

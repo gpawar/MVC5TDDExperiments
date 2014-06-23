@@ -7,6 +7,8 @@ namespace MVC5TDDExperiments.Migrations
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
     using System.Linq;
+    using Microsoft.AspNet.Identity.EntityFramework;
+    using Microsoft.AspNet.Identity;
 
     internal sealed class Configuration : DbMigrationsConfiguration<MVC5TDDExperiments.Models.BookStoreDb>
     {
@@ -36,8 +38,24 @@ namespace MVC5TDDExperiments.Migrations
 
         private void SeedUserRoles(MVC5TDDExperiments.Models.BookStoreDb context)
         {
-            //TODO: create default user
-            
+            if (!context.Roles.Any(r => r.Name == "administrator"))
+            {
+                var store = new RoleStore<IdentityRole>(context);
+                var manager = new RoleManager<IdentityRole>(store);
+                var role = new IdentityRole { Name = "administrator" };
+
+                manager.Create(role);
+            }
+
+            if (!context.Users.Any(u => u.UserName == "adrien.nicolet"))
+            {
+                var store = new UserStore<ApplicationUser>(context);
+                var manager = new UserManager<ApplicationUser>(store);
+                var user = new ApplicationUser { UserName = "adrien.nicolet@gmail.com" };
+
+                manager.Create(user, "ChangeItAsap!");
+                manager.AddToRole(user.Id, "administrator");
+            }
         }
     }
 }

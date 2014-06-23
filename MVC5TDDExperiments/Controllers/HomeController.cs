@@ -50,6 +50,7 @@ namespace MVC5TDDExperiments.Controllers
             return View(booksByGenre);
         }
 
+        [Authorize(Roles="administrator")]
         public ViewResult Create()
         {
             var bookEditViewModel = new BookEditViewModel()
@@ -60,6 +61,7 @@ namespace MVC5TDDExperiments.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "administrator")]
         public ActionResult Create(BookEditViewModel bookViewModel)
         {
             try

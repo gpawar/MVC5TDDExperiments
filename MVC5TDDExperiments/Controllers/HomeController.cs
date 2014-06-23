@@ -101,6 +101,7 @@ namespace MVC5TDDExperiments.Controllers
         {
             if (!ModelState.IsValid)
             {
+                //ModelState for BookEditViewModel is invalid, for example, Title.length < 3
                 bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
                 return View(bookViewModel);
             }
@@ -108,6 +109,7 @@ namespace MVC5TDDExperiments.Controllers
             var bookEntity = new Book(bookViewModel);
             if (!TryValidateModel(bookEntity))
             {
+                //ModelState for Book Entity is invalid, for example, Title.length < 4
                 bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
                 return View(bookViewModel);
             }

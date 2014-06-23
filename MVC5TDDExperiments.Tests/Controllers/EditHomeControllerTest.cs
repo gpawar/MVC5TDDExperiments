@@ -28,12 +28,6 @@ namespace MVC5TDDExperiments.Tests.Controllers
         [TestMethod]
         public void EditDBExceptionRepopulatesAuthorsDropdown()
         {
-            throw new NotImplementedException("todo: db exception");
-        }
-
-        [TestMethod]
-        public void EditEntityValidationErrorRepopulatesAuthorsDropdown()
-        {
             //Arrange
             var repository = Mock.Create<IRepository>();
             int bookId = 1;
@@ -42,11 +36,11 @@ namespace MVC5TDDExperiments.Tests.Controllers
             {
                 AuthorId = AuthorHelper.RobertMartin(authorId).AuthorId,
                 BookId = BookHelper.CleanCode(bookId, authorId).BookId,
-                Title = "123", //Too short, min is 4 (defined in the entity)
+                Title = BookHelper.CleanCode(bookId, authorId).Title,
                 Genre = BookHelper.CleanCode(bookId, authorId).Genre,
             };
-            Mock.Arrange(() => repository.Save((Book)Arg.AnyObject)).OccursNever();
-            var authorsList = new List<Author>() { AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(2) };
+            Mock.Arrange(() => repository.Save((Book) Arg.AnyObject)).Throws(new Exception("test exception with message")).OccursOnce();
+            var authorsList = new List<Author>() { AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(authorId) };
             Mock.Arrange(() => repository.GetAllAuthors()).Returns(authorsList).OccursOnce();
 
             //Act
@@ -56,11 +50,48 @@ namespace MVC5TDDExperiments.Tests.Controllers
             var result = controller.Edit(book) as ViewResult;
             var model = result.Model as BookEditViewModel;
             var errorStates = from m in controller.ModelState.Values select m.Errors;
+            var selectedAuthor = model.Authors.Find(a => a.Selected);
+
+            //Assert
+            Assert.AreEqual("", result.ViewName);
+            Assert.AreEqual("test exception with message", errorStates.First().First().ErrorMessage);
+            Assert.AreEqual(book.AuthorId.ToString(), selectedAuthor.Value);
+            Assert.IsNull(controller.ViewBag.Message);
+            Assert.IsNull(controller.TempData["Message"]);
+            Mock.Assert(repository);
+        }
+
+        [TestMethod]
+        public void EditEntityValidationErrorRepopulatesAuthorsDropdown()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            int bookId = 1;
+            int authorId = 3;
+            var book = new BookEditViewModel()
+            {
+                AuthorId = AuthorHelper.RobertMartin(authorId).AuthorId,
+                BookId = BookHelper.CleanCode(bookId, authorId).BookId,
+                Title = "123", //Too short, min is 4 (defined in the entity)
+                Genre = BookHelper.CleanCode(bookId, authorId).Genre,
+            };
+            Mock.Arrange(() => repository.Save((Book)Arg.AnyObject)).OccursNever();
+            var authorsList = new List<Author>() { AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(authorId) };
+            Mock.Arrange(() => repository.GetAllAuthors()).Returns(authorsList).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            controller.ControllerContext = Mock.Create<ControllerContext>(); //needed by TryValidateModel(entity)
+
+            var result = controller.Edit(book) as ViewResult;
+            var model = result.Model as BookEditViewModel;
+            var errorStates = from m in controller.ModelState.Values select m.Errors;
+            var selectedAuthor = model.Authors.Find(a => a.Selected);
 
             //Assert
             Assert.AreEqual("", result.ViewName);
             Assert.AreEqual("The minimal length for the title is 4 - From Entity", errorStates.First().First().ErrorMessage);
-            Assert.IsTrue(model.Authors.Exists(a => a.Selected));
+            Assert.AreEqual(book.AuthorId.ToString(), selectedAuthor.Value);
             Assert.IsNull(controller.ViewBag.Message);
             Mock.Assert(repository);
         }

@@ -22,11 +22,11 @@ namespace MVC5TDDExperiments.Models.ViewModels
 
         public int BookId { get; set; }
 
-        [MinLength(3, ErrorMessage = "The minimal length for the title is 3")]
+        [MinLength(3, ErrorMessageResourceType = typeof(MVC5TDDExperiments.Resources.Messages), ErrorMessageResourceName = "ErrorMessageLength3")]
         [MaxLength(100)]
         public string Title { get; set; }
 
-        [MinLength(3, ErrorMessage = "The minimal length for the title is 3")]
+        [MinLength(3, ErrorMessage = "The minimal length for the genre is 3")]
         [MaxLength(100)]
         public string Genre { get; set; }
 

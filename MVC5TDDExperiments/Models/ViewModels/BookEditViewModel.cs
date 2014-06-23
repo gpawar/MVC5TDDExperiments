@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
@@ -29,6 +30,7 @@ namespace MVC5TDDExperiments.Models.ViewModels
         [MaxLength(100)]
         public string Genre { get; set; }
 
+        [DisplayName("Author")]
         public int AuthorId { get; set; }
         public List<SelectListItem> Authors { get; set; }
     }

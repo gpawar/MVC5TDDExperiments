@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web.Mvc;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -17,6 +18,69 @@ namespace MVC5TDDExperiments.Tests.Controllers
     [TestClass]
     public class HomeControllerTest
     {
+        [TestMethod]
+        public void CreateWithDBExceptionAddsErrorToModelStateAndRepopulatesAuthorsDropdown()
+        {
+            //Arrange
+            var repository = Mock.Create<IRepository>();
+            int bookId = 1;
+            int authorId = 1;
+            var exceptionMessage = "Unable to save changes. Try again, and if the problem persists, see your system administrator.";
+            var book = new BookEditViewModel()
+            {
+                AuthorId = AuthorHelper.RobertMartin(authorId).AuthorId,
+                BookId = BookHelper.CleanCode(bookId, authorId).BookId,
+                Title = BookHelper.CleanCode(bookId, authorId).Title,
+                Genre = BookHelper.CleanCode(bookId, authorId).Genre,
+            };
+            Mock.Arrange(() => repository.CreateBook((Book)Arg.AnyObject)).Throws(new Exception()).OccursOnce();
+            var authorsList = new List<Author>() { AuthorHelper.RobertMartin(1), AuthorHelper.JRRTolkien(authorId) };
+            Mock.Arrange(() => repository.GetAllAuthors()).Returns(authorsList).OccursOnce();
+
+            //Act
+            var controller = new HomeController(repository);
+            controller.ControllerContext = Mock.Create<ControllerContext>(); //needed by TryValidateModel(entity)
+            var result = controller.Create(book) as ViewResult;
+            var model = result.Model as BookEditViewModel;
+            var errorStates = from m in controller.ModelState.Values select m.Errors;
+            var selectedAuthor = model.Authors.Find(a => a.Selected);
+
+            //Assert
+            Assert.AreEqual("", result.ViewName);
+            Assert.AreEqual(exceptionMessage, errorStates.First().First().ErrorMessage);
+            Assert.AreEqual(book.AuthorId.ToString(), selectedAuthor.Value);
+            Assert.IsNull(controller.ViewBag.Message);
+            Assert.IsNull(controller.TempData["Message"]);
+            Mock.Assert(repository);
+        }
+
+        [TestMethod]
+        public void DetailsWithoutIdReturnsBadRequest()
+        {
+            //Arrange
+
+            //Act
+            var controller = new HomeController();
+            int? id = null;
+            var result = controller.Details(id) as HttpStatusCodeResult;
+
+            //Assert
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
+        }
+
+        [TestMethod]
+        public void DeleteWithoutIdReturnsBadRequest()
+        {
+            //Arrange
+
+            //Act
+            var controller = new HomeController();
+            int? id = null;
+            var result = controller.Delete(id) as HttpStatusCodeResult;
+
+            //Assert
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
+        }
 
         [TestMethod]
         public void DetailsShowsCompleteBookData()
@@ -56,7 +120,7 @@ namespace MVC5TDDExperiments.Tests.Controllers
 
             //Act
             var controller = new HomeController(repository);
-            ViewResult result = controller.Delete(bookIdToDelete);
+            ViewResult result = controller.Delete(bookIdToDelete) as ViewResult;
             var resultViewName = result.ViewName;
             var model = result.Model as List<Book>;
             var insertedBook = model.Find(b => b.BookId == bookIdToDelete);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MVC5TDDExperiments.Models;
@@ -60,28 +61,46 @@ namespace MVC5TDDExperiments.Controllers
         [HttpPost]
         public ActionResult Create(BookEditViewModel bookViewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var book = new Book(bookViewModel);
-                repository.CreateBook(book);
-                TempData["Message"] = "Book created successfully";
-                return RedirectToAction("Index");
+                if (ModelState.IsValid)
+                {
+                    var book = new Book(bookViewModel);
+                    repository.CreateBook(book);
+                    TempData["Message"] = "Book created successfully";
+                    return RedirectToAction("Index");
+                }
             }
-            bookViewModel.Authors = PopulateAuthorsDropdown();
+            catch (Exception)
+            {
+                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists, see your system administrator.");
+            }
+            
+            bookViewModel.Authors = PopulateAuthorsDropdown(bookViewModel.AuthorId);
             return View(bookViewModel);
         }
 
-        public ViewResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
-            repository.Delete(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            repository.Delete(id.Value);
             ViewBag.Message = "Book deleted successfully";
             return View("Index", repository.GetAllBooks());
         }
 
 
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            var dbBook = repository.GetBook(id);
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var dbBook = repository.GetBook(id.Value);
 
             if (dbBook == null)
             {
@@ -128,6 +147,21 @@ namespace MVC5TDDExperiments.Controllers
             } 
         }
 
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
+            var book = repository.GetBook(id.Value);
+            if (book == null)
+            {
+                return HttpNotFound("No book found for id " + id);
+            }
+
+            return View(book);
+        }
 
         private List<SelectListItem> PopulateAuthorsDropdown(int selectedAuthorId = -1)
         {
@@ -156,10 +190,5 @@ namespace MVC5TDDExperiments.Controllers
             base.Dispose(disposing);
         }
 
-        public ViewResult Details(int id)
-        {
-            var book = repository.GetBook(id);
-            return View(book);
-        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -18,6 +19,19 @@ namespace MVC5TDDExperiments.Tests.Controllers
     [TestClass]
     public class EditHomeControllerTest
     {
+        [TestMethod]
+        public void EditWithoutIdReturnsBadRequest()
+        {
+            //Arrange
+
+            //Act
+            var controller = new HomeController();
+            int? id = null;
+            var result = controller.Edit(id) as HttpStatusCodeResult;
+
+            //Assert
+            Assert.AreEqual((int)HttpStatusCode.BadRequest, result.StatusCode);
+        }
 
         [TestMethod]
         public void EditViewModelValidationErrorRepopulatesAuthorsDropdown()

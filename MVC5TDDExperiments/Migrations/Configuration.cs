@@ -14,7 +14,7 @@ namespace MVC5TDDExperiments.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
+            AutomaticMigrationsEnabled = false;
             ContextKey = "MVC5TDDExperiments.Models.BookStoreDb";
         }
 

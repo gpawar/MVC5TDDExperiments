@@ -7,13 +7,13 @@ namespace MVC5TDDExperiments.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.0-30225")]
-    public sealed partial class InitialCreate : IMigrationMetadata
+    public sealed partial class InitialCreateForDeploy : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreate));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialCreateForDeploy));
         
         string IMigrationMetadata.Id
         {
-            get { return "201406190826044_InitialCreate"; }
+            get { return "201406240924540_InitialCreateForDeploy"; }
         }
         
         string IMigrationMetadata.Source

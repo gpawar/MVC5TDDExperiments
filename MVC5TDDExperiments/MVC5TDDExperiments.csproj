@@ -165,9 +165,9 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Migrations\201406190826044_InitialCreate.cs" />
-    <Compile Include="Migrations\201406190826044_InitialCreate.Designer.cs">
-      <DependentUpon>201406190826044_InitialCreate.cs</DependentUpon>
+    <Compile Include="Migrations\201406240924540_InitialCreateForDeploy.cs" />
+    <Compile Include="Migrations\201406240924540_InitialCreateForDeploy.Designer.cs">
+      <DependentUpon>201406240924540_InitialCreateForDeploy.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Author.cs" />
@@ -259,8 +259,8 @@
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201406190826044_InitialCreate.resx">
-      <DependentUpon>201406190826044_InitialCreate.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201406240924540_InitialCreateForDeploy.resx">
+      <DependentUpon>201406240924540_InitialCreateForDeploy.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Messages.fr.resx" />
     <EmbeddedResource Include="Resources\Messages.resx">
